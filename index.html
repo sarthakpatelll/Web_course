@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Access</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Get To Access Telegram Group</h1>
+      <p>Join our exclusive community for ₹499</p>
+    </header>
+    
+    <main>
+      <div class="card">
+        <div class="card-content">
+          <h2>What You'll Get ?</h2>
+          <ul class="benefits">
+            <li>Access to Apna Collage Course Telegram Group</li>
+            <li>All Paid cources Worth of Around 25K+ Rupees</li>
+            <li>Exclusive content and resources</li>
+            <li>Regular updates</li>
+          </ul>
+          
+          <button id="payButton" class="pay-button">Pay ₹499 Now</button>
+        </div>
+      </div>
+      
+      <div id="successMessage" class="success-message hidden">
+        <div class="success-icon">✓</div>
+        <h2>Payment Successful!</h2>
+        <p>Thank you for your purchase. Here's your access link:</p>
+        <a id="telegramLink" href="https://telegram.dog/+vuucalfBXxAwZjE1" class="telegram-link" target="_blank">Join Telegram Group</a>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
