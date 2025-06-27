@@ -57,7 +57,7 @@ app.post('/verify-payment', (req, res) => {
     // Payment verified successfully
     res.json({
       success: true,
-      telegramLink: 'https://t.me/joinchat/your-telegram-group-link' // Replace with your actual link
+      telegramLink: 'https://telegram.dog/+vuucalfBXxAwZjE1' 
     });
   } else {
     res.status(400).json({ success: false });
