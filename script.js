@@ -1,50 +1,66 @@
 document.getElementById('payButton').addEventListener('click', async function() {
   try {
+    // First get Razorpay key from server
+    const keyResponse = await fetch('http://localhost:3000/get-razorpay-key');
+    if (!keyResponse.ok) throw new Error('Failed to get Razorpay key');
+    const { key } = await keyResponse.json();
+
     // Create order
-    const response = await fetch('/create-order', {
+    const orderResponse = await fetch('http://localhost:3000/create-order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       }
     });
     
-    const order = await response.json();
+    if (!orderResponse.ok) throw new Error('Failed to create order');
+    const order = await orderResponse.json();
     
     // Razorpay options
     const options = {
-      key: process.env.RAZORPAY_KEY_ID, // Will be replaced by your actual key
+      key: key, // Use key from server
       amount: order.amount,
       currency: order.currency,
-      name: "Premium Access",
-      description: "Join our exclusive community",
+      name: "Apna Collage Courses",
+      description: "Access to premium Telegram group",
       order_id: order.id,
       handler: async function(response) {
-        // Verify payment
-        const verificationResponse = await fetch('/verify-payment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_signature: response.razorpay_signature
-          })
-        });
-        
-        const verificationResult = await verificationResponse.json();
-        
-        if (verificationResult.success) {
-          // Show success message and Telegram link
-          document.getElementById('telegramLink').href = verificationResult.telegramLink;
-          document.getElementById('successMessage').classList.remove('hidden');
-          document.querySelector('.card').classList.add('hidden');
-        } else {
-          alert('Payment verification failed. Please contact support.');
+        try {
+          // Verify payment
+          const verificationResponse = await fetch('http://localhost:3000/verify-payment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          });
+          
+          const verificationResult = await verificationResponse.json();
+          
+          if (verificationResult.success) {
+            // Show success message and Telegram link
+            document.getElementById('telegramLink').href = verificationResult.telegramLink;
+            document.getElementById('successMessage').classList.remove('hidden');
+            document.querySelector('.card').classList.add('hidden');
+          } else {
+            alert('Payment verification failed. Please contact support.');
+          }
+        } catch (error) {
+          console.error('Verification error:', error);
+          alert('Error verifying payment. Please check console.');
         }
       },
       theme: {
         color: '#4361ee'
+      },
+      modal: {
+        ondismiss: function() {
+          console.log('Payment modal closed');
+        }
       }
     };
     
@@ -52,7 +68,7 @@ document.getElementById('payButton').addEventListener('click', async function() 
     rzp.open();
     
   } catch (error) {
-    console.error('Error:', error);
-    alert('An error occurred. Please try again.');
+    console.error('Payment error:', error);
+    alert('Error: ' + error.message);
   }
 });
